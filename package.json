@@ -1,0 +1,87 @@
+{
+  "name": "order",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
+    "axios": "^0.19.0",
+    "bootstrap": "^4.3.1",
+    "classnames": "^2.2.6",
+    "datatables.net": "^1.10.20",
+    "date-fns": "^1.30.1",
+    "font-awesome": "^4.7.0",
+    "google-map-react": "^1.1.5",
+    "google-maps-react": "^2.0.2",
+    "history": "^4.10.1",
+    "internal-ip": "^5.0.0",
+    "ip": "^1.1.5",
+    "iplocation": "^6.1.0",
+    "jquery": "^3.4.1",
+    "jquery-selectric": "^0.2.0",
+    "local-ip": "^2.0.0",
+    "mdbreact": "^4.23.0",
+    "multiselect-dropdown-react": "^1.0.5",
+    "node-sass": "^4.13.0",
+    "public-ip": "^4.0.0",
+    "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-bootstrap-confirm": "^1.0.1",
+    "react-bootstrap-multiselect": "^2.4.1",
+    "react-bootstrap-select": "^0.14.0",
+    "react-bootstrap-slider": "^2.2.2",
+    "react-ckeditor-component": "^1.1.0",
+    "react-collapsible": "^2.6.0",
+    "react-confirm-alert": "^2.4.1",
+    "react-cookies": "^0.1.1",
+    "react-d3-speedometer": "^0.7.3",
+    "react-datepicker": "^2.9.6",
+    "react-dom": "^16.8.6",
+    "react-gauge-chart": "^0.2.3",
+    "react-geolocated": "^3.0.1",
+    "react-google-maps": "^9.4.5",
+    "react-jquery-datatables": "^1.0.0",
+    "react-numeric-input": "^2.2.3",
+    "react-phone-number-input": "^2.4.1",
+    "react-pure-loaders": "^3.0.1",
+    "react-redux": "^7.0.3",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.0.0",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "^3.0.0",
+    "react-select": "^2.4.4",
+    "react-virtualized-select": "^3.1.3",
+    "react-widgets": "^4.4.11",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "typescript": "^3.4.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2"
+  }
+}
