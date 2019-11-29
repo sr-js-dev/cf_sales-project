@@ -181,7 +181,14 @@ export const TRANSLATIONS = {
       Edit_Customer: 'Edit Customer',
       Edit_Contact: 'Edit Contact',
       Edit_Task: 'Edit Task',
-      Edit_Report: 'Edit Vist Report'
+      Edit_Report: 'Edit Vist Report',
+      Task_history: 'Task Hitory',
+      PreviousEmployee: 'PreviousEmployee',
+      NewEmployee: 'NewEmployee',
+      ChangeDate: 'ChangeDate',
+      Top_Customers: 'Top 10 Customers',
+      Top_Items: 'Top 10 Items',
+      Top_Models: 'Top 10 Models'
     },
 
 
@@ -367,6 +374,13 @@ export const TRANSLATIONS = {
       Edit_Customer: 'Bewerk Klant',
       Edit_Contact: 'Bewerk Contact',
       Edit_Task: 'Bewerk Taak',
-      Edit_Report: 'Uitgeven Vist Verslag'
+      Edit_Report: 'Uitgeven Vist Verslag',
+      Task_history: 'Taak Geschiedenis',
+      PreviousEmployee: 'VoorgaandWerknemer',
+      NewEmployee: 'NieuwWerknemer',
+      ChangeDate: 'VeranderingDatum',
+      Top_Customers: 'Top 10 Klanten',
+      Top_Items: 'Top 10 Items',
+      Top_Models: 'Top 10 Modellen'
     }
   };

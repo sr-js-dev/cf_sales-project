@@ -419,6 +419,8 @@ input:focus {
   outline-offset: 0px;
 }
 .dashboard-map-layout{
+  margin: auto;
+  width: 98%;
   height: 600px;
   margin-top: 50px;
   padding-left:0px;
@@ -495,4 +497,15 @@ input:-internal-autofill-selected {
 .task-table-tr-past{
   background-color: #F9BBBB !important; 
   color:white !important;
+}
+.css-es53b3-multiValue{
+  background-color: #C4DDF8 !important;
+  border-radius: 4px !important;
+}
+@media (min-width: 576px){
+  .top-content {
+    /* padding */
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
 }

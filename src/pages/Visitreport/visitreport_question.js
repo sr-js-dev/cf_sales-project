@@ -9,6 +9,9 @@ import Axios from 'axios';
 import CKEditor from "react-ckeditor-component"
 import history from '../../history';
 import * as authAction  from '../../actions/authAction';
+import Createtask from '../Tasks/taskform'
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 const mapStateToProps = state => ({
      ...state.auth,
@@ -141,12 +144,42 @@ handleSubmit = (event) => {
         }
         Axios.post(API.AddRemarkTovisitReport, params, headers)
         .then(result => {
-            history.push('/visit-report');
-            this.props.blankdispatch()
+            if(!this.props.location.state.updateFlag){
+                confirmAlert({
+                    title: 'Confirm',
+                    message: 'Do you want to create a new task?',
+                    buttons: [
+                      {
+                        label: 'OK',
+                        onClick: () => {
+                           this.createNewTask();
+                        }
+                      },
+                      {
+                        label: 'Cancel',
+                        onClick: () => {this.getVisitReport()}
+                      }
+                    ]
+                  });
+            }else{
+                this.getVisitReport()
+            }
+            
         });
     }
     
 }
+
+getVisitReport = () =>{
+    history.push('/visit-report');
+    this.props.blankdispatch()
+}
+
+createNewTask = () => {
+    this.setState({modalcreateTaskShow: true,taskflag: true})
+
+}
+
 componentWillReceiveProps = () => {
     this.setState({selectlabel:trls('Select'), selectvalue:trls('Select')})
 }
@@ -165,14 +198,26 @@ previousVisitReport = () =>{
 changeremark = (event) =>{
     this.setState({remarktext:event.currentTarget.value})
 }
+
 changeSelectQuestion = (value) => {
     this.setState({selectlabel:value.label, selectvalue:value.value})
     this.setState({selectValidation:value.label});
 }
+
 onChange = (evt) => {
     var newContent = evt.editor.getData();
     this.setState({content:newContent})
-    }
+}
+
+detailmode = () =>{
+    this.setState({taskflag: false})
+}
+
+onHide = () => {
+    this.setState({modalcreateTaskShow: false});
+    history.push('/visit-report');
+    this.props.blankdispatch()
+}
 
 render () {
     let answer = [];
@@ -193,6 +238,14 @@ render () {
                 {this.state.nextQuestionIdflag&&(
                     <div className="create-report-header-title"><i className="fas fa-question-circle" style={{marginRight:"20px", marginTop:"4px"}}></i>{question+"  ("+(this.state.questionNum+1)+")"}</div>
                 )}
+                <Createtask
+                    show={this.state.modalcreateTaskShow}
+                    detailmode={this.detailmode}
+                    taskflag={this.state.taskflag}
+                    customerId={this.props.location.state.customerId}
+                    onHide={() => this.onHide()}
+                    customerNewCreate={true}
+                />  
                 <Form className="create-visitreport-form" onSubmit = { this.handleSubmit }>
                     <Form.Group controlId="formBasicEmail">
                         {this.state.nextQuestionIdflag&&(

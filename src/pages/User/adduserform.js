@@ -9,6 +9,8 @@ import Axios from 'axios';
 import ListErrors from '../../components/listerrors';
 import { trls } from '../../components/translate';
 import "react-datepicker/dist/react-datepicker.css";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -24,18 +26,52 @@ class Adduserform extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            roles:[{"value":"Administrator","label":"Administrator"},{"value":"Customer","label":"Customer"}],
+            // roles:[{"value":"Administrator","label":"Administrator"},{"value":"Customer","label":"Customer"}],
             selectrolvalue:"Select...",
             selectrollabel:"Select...",
             val1:'',
             selectflag:true
         };
     }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
+
     componentDidMount() {
+        this.getRoleData()
     }
+    
+    componentDidUpdate() {
+        if(this.props.updateflag){
+            this.getUpdateUserRole();
+            this.props.removeDetail();
+        }
+        
+    }
+
+    getUpdateUserRole = () =>{
+        let Roles = this.props.userUpdateData.Roles;
+        let tempArray = [];
+        tempArray = this.state.userRole;
+        
+        tempArray.map((data, index) => {
+            if(data.Id===Roles[0].RoleId){
+                this.setState({updateUserRole:data.Name})
+            }
+            return tempArray;
+        })
+    }
+
+    getRoleData = () =>{
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.get(API.GetRoles, headers)
+        .then(result => {
+            console.log('3333', result)
+            this.setState({userRole:result.data})
+        });
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -45,7 +81,7 @@ class Adduserform extends Component {
         }
         if(this.props.mode==="add"){
             var params = {
-                "Email": data.email1,
+                "Email": data.email,
                 "PhoneNumber": data.PhoneNumber,
                 "password": data.password1,
                 "confirmPassword": data.confirmpassword1,
@@ -74,7 +110,7 @@ class Adduserform extends Component {
                 "RoleName": data.RoleName,
             }
             headers = SessionManager.shared().getAuthorizationHeader();
-            Axios.put( "https://cors-anywhere.herokuapp.com/"+API.PostUserUpdate, params, headers)
+            Axios.put(API.PostUserUpdate, params, headers)
             .then(result => {
                 this.props.onGetUser()
                 this.props.onHide();
@@ -90,21 +126,27 @@ class Adduserform extends Component {
         this.setState({val1:value.value})
         this.setState({selectflag:false})
     }
+    onHide= () => {
+        this.props.onHide();
+        this.setState({phonevalue: ""})
+    }
     render(){   
         let updateData = [];
         let roles = [];
         let roledata=''
         if(this.props.userUpdateData){
             updateData=this.props.userUpdateData;
-            roles = updateData.roles;
-            if(roles){
-                roledata=roles[0].name;
-            }
+        }
+        if(this.state.updateUserRole){
+            roledata=this.state.updateUserRole;
+        }
+        if(this.state.userRole){
+            roles = this.state.userRole.map( s => ({value:s.Name,label:s.Name}) );
         }
         return (
             <Modal
             show={this.props.show}
-            onHide={this.props.onHide}
+            onHide={this.onHide}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             backdrop= "static"
@@ -150,8 +192,8 @@ class Adduserform extends Component {
                             </Form.Label>
                             <Col sm="9" className="product-text">
                                 { updateData&&this.props.mode==="view" ? (
-                                    <Form.Control type="text" name="email1" readOnly defaultValue={updateData.Email} required placeholder={trls('Email')}/>
-                                ) : <Form.Control type="text" name="email1" required placeholder={trls('Email')} />
+                                    <Form.Control type="email" name="email" readOnly defaultValue={updateData.Email} required placeholder={trls('Email')}/>
+                                ) : <Form.Control type="email" name="email" required placeholder={trls('Email')} />
                                 }
                             </Col>
                         </Form.Group>
@@ -202,8 +244,8 @@ class Adduserform extends Component {
                             </Form.Label>
                             <Col sm="9" className="product-text">
                                 { updateData&&this.props.mode==="update" ? (
-                                    <Form.Control type="text" name="email1" defaultValue={updateData.Email} required placeholder={trls('Email')}/>
-                                ) : <Form.Control type="text" name="email1" required placeholder={trls('Email')}/>
+                                    <Form.Control type="email" name="email" defaultValue={updateData.Email} required placeholder={trls('Email')}/>
+                                ) : <Form.Control type="email" name="email" required placeholder={trls('Email')}/>
                                 }
                             </Col>
                         </Form.Group>
@@ -215,8 +257,17 @@ class Adduserform extends Component {
                         </Form.Label>
                         <Col sm="9" className="product-text">
                             { updateData&&this.props.mode==="update" ? (
-                                <Form.Control type="text" name="PhoneNumber" defaultValue={updateData.PhoneNumber} required placeholder={trls('PhoneNumber')} />
-                            ) : <Form.Control type="text" name="PhoneNumber" placeholder={trls('PhoneNumber')} />
+                                <PhoneInput
+                                    placeholder="Enter mobile number"
+                                    value={ updateData.PhoneNumber }
+                                    name="PhoneNumber"
+                                    onChange={ value => this.setState({phonevalue: value }) } />
+                            ) : 
+                                <PhoneInput
+                                    placeholder="Enter mobile number"
+                                    value={ this.state.phonevalue }
+                                    name="PhoneNumber"
+                                    onChange={ value => this.setState({phonevalue: value }) } />
                             }
                             
                         </Col>
@@ -252,7 +303,7 @@ class Adduserform extends Component {
                             { roledata&&this.state.selectflag&&this.props.mode==="update" ? (
                                 <Select
                                     name="roles"
-                                    options={this.state.roles}
+                                    options={roles}
                                     value={{"value":roledata,"label":roledata}}
                                     placeholder={trls('Select')}
                                     onChange={val => this.getRoles(val)}
@@ -260,7 +311,7 @@ class Adduserform extends Component {
                             ) : <Select
                                     name="roles"
                                     placeholder={trls('Select')}
-                                    options={this.state.roles}
+                                    options={roles}
                                     onChange={val => this.getRoles(val)}
                                 />
                             }

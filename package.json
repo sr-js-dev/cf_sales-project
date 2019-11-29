@@ -37,6 +37,7 @@
     "react-cookies": "^0.1.1",
     "react-d3-speedometer": "^0.7.3",
     "react-datepicker": "^2.9.6",
+    "react-datetime-picker": "^2.8.0",
     "react-dom": "^16.8.6",
     "react-gauge-chart": "^0.2.3",
     "react-geolocated": "^3.0.1",

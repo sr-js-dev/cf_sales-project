@@ -47,6 +47,9 @@ class Dashboard extends Component {
         setTimeout(this.getLocationIpPosition(), 60000);
         this.getNumberOpenTasks();
         this.getCustomerCoordinates();
+        this.getTopCustomer();
+        this.getTopItem();
+        this.getTopModel();
     }
     getLocationIpPosition = () =>{
         // (async () => {
@@ -121,6 +124,36 @@ class Dashboard extends Component {
         }
         )
     }
+
+    getTopCustomer = () => {
+        var header = SessionManager.shared().getAuthorizationHeader();
+        Axios.get(API.GetTopCustomer, header)
+        .then(result => {
+            this.setState({topCustmer:result.data.Items})
+        }
+        )
+    }
+
+    getTopItem = () => {
+        var header = SessionManager.shared().getAuthorizationHeader();
+        Axios.get(API.GetTopItems, header)
+        .then(result => {
+            console.log('112', result)
+            this.setState({topItem:result.data.Items})
+        }
+        )
+    }
+
+    getTopModel = () => {
+        var header = SessionManager.shared().getAuthorizationHeader();
+        Axios.get(API.GetTopModel, header)
+        .then(result => {
+            console.log('123', result)
+            this.setState({topModel:result.data.Items})
+        }
+        )
+    }
+
     handleMarkerClick = (params) => {
         this.setState({
             customerArray: this.state.customerArray.map(marker => {
@@ -191,12 +224,33 @@ class Dashboard extends Component {
         let distance = 2 * 6371 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return distance;
     }
-
+    formatNumber = (num) => {
+        if(num){
+            var value = num.toFixed(2);
+            return  "€" + value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        }else{
+            return "€ 0.00" 
+        }
+       
+    }
     render(){   
         let number = 0;
+        let topCustmer = [];
+        let topItem = [];
+        let topModel = [];
+        if(this.state.topCustmer){
+            topCustmer=this.state.topCustmer;
+        }
+        if(this.state.topItem){
+            topItem=this.state.topItem;
+        }
+        if(this.state.topModel){
+            topModel=this.state.topModel;
+        }
         if(this.state.tasksnumber[0]){
             number = this.state.tasksnumber
         }
+    
         let map_lang=trls('map_lang')
         return (
             <Container>
@@ -204,7 +258,7 @@ class Dashboard extends Component {
                     <h2 className="title">{trls('Dashboard')}</h2>
                 </div>
                 <Row className="dashboard-container">
-                    <Col sm={4} style={{padding:0}} >
+                    <Col sm={4} className="top-content" >
                         <div className="dashboard__top-long">
                             <div>
                                 <h6 className="dashboard__top-long-title">{trls('Visit_reports_page')}</h6>
@@ -236,7 +290,99 @@ class Dashboard extends Component {
                         </div>
                     </Col>
                 </Row>
-                <div className="dashboard-map-layout">
+                <Row className="dashboard-container" style={{paddingTop:40}}>
+                    <Col sm={4} style={{paddingBottom:20}} >
+                        <div className="dashboard__bottom-item">
+                            <div className="dashboard__bottom-item-header">
+                                <h6 className="dashboard__bottom-item-title">{trls("Top_Customers")}</h6>
+                                <div className="dashboard__bottom-item-img">
+                                    <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
+                                </div>
+                            </div>
+                            <table className="dashboard__bottom-item-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>{trls('CustomerName')}</th>
+                                        <th>{trls('Revenue')}</th>
+                                    </tr>
+                                </thead>
+                                    {topCustmer &&(<tbody >
+                                        {
+                                            topCustmer.map((data,i) =>(
+                                            <tr id={i} key={i}>
+                                                <td>{i+1}</td>
+                                                <td>{data.Klantnaam}</td>
+                                                <td>{this.formatNumber(data.Revenue)}</td>
+                                            </tr>
+                                        ))
+                                        }
+                                    </tbody>)}
+                            </table>
+                        </div>
+                    </Col>
+                    <Col sm={4} style={{paddingBottom:20}}>
+                        <div className="dashboard__bottom-item">
+                            <div className="dashboard__bottom-item-header">
+                                <h6 className="dashboard__bottom-item-title">{trls('Top_Items')}</h6>
+                                <div className="dashboard__bottom-item-img">
+                                    <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
+                                </div>
+                            </div>
+                            <table className="dashboard__bottom-item-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>{trls('Item')}</th>
+                                        <th>{trls('Revenue')}</th>
+                                    </tr>
+                                </thead>
+                                    {topItem &&(<tbody >
+                                        {
+                                            topItem.map((data,i) =>(
+                                            <tr id={i} key={i}>
+                                                <td>{i+1}</td>
+                                                <td>{data.itemnr}</td>
+                                                <td>{this.formatNumber(data.revenue)}</td>
+                                            </tr>
+                                        ))
+                                        }
+                                    </tbody>)}
+                            </table>
+                        </div>
+                    </Col>
+                    <Col sm={4}>
+                        <div className="dashboard__bottom-item">
+                            <div className="dashboard__bottom-item-header">
+                                    <h6 className="dashboard__bottom-item-title">{trls('Top_Models')}</h6>
+                                <div className="dashboard__bottom-item-img">
+                                    <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
+                                </div>
+                            </div>
+                            <table className="dashboard__bottom-item-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>{trls('Model')}</th>
+                                        <th>{trls('Revenue')}</th>
+                                    </tr>
+                                </thead>
+                                    {topModel &&(<tbody >
+                                        {
+                                            topModel.map((data,i) =>(
+                                            <tr id={i} key={i}>
+                                                <td>{i+1}</td>
+                                                <td>{data.Model}</td>
+                                                <td>{this.formatNumber(data.Revenue)}</td>
+                                            </tr>
+                                        ))
+                                        }
+                                    </tbody>)}
+                            </table>
+                        </div>
+                    </Col>
+                </Row>
+                <Col className="dashboard-map-layout">
                     <Row>
                         <Col sm={4} style={{paddingTop:"10px", paddingLeft:'30px'}}>
                             <h5 style={{fontWeight: "bold"}}>{trls('Nearest_Customers')}</h5>
@@ -273,7 +419,7 @@ class Dashboard extends Component {
                         onMarkerClick={(val)=>this.handleMarkerClick(val)}
                         onMarkerClose={(val)=>this.handleMarkerClose(val)}
                     /> 
-                </div>    
+                </Col>    
             </Container>
         );
     }

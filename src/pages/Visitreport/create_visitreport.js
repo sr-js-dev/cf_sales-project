@@ -57,7 +57,7 @@ handleSubmit = (event) => {
     .then(result => {
         history.push({
             pathname: '/visit-report/create-question',
-            state: { newId:result.data.NewId, updateFlag: false}
+            state: { newId:result.data.NewId, customerId: data.customer, updateFlag: false}
         })
     });
 }

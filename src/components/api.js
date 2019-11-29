@@ -2,6 +2,9 @@ const BASEURL = 'https://brandnewkey.sohosted-vps.nl:5388';
 export default {
     GetToken: "https://brandnewkey.sohosted-vps.nl:5388/token",
     GetUserData:  `${BASEURL}/api/users/GetUsers?excludeActiveUsers=false`,
+    GetUserDataById: `${BASEURL}/api/Users/`,
+    PostUserData: `${BASEURL}/api/Users`,
+    PostUserUpdate: `${BASEURL}/api/Users`,
     GetTasksData: `${BASEURL}/api/factory/execute/portallvs/getTasks`,
     GetTaskType:  `${BASEURL}/api/factory/execute/portallvs/getTasktypesDropdown`,
     GetCustomer:  `${BASEURL}/api/factory/execute/portallvs/getCustomersDropdown`,
@@ -38,9 +41,13 @@ export default {
     GetTask: `${BASEURL}/api/factory/execute/portallvs/getTask`, 
     PutTask: `${BASEURL}/api/factory/execute/portallvs/putTask`,    
     GetRemark: `${BASEURL}/api/factory/execute/portallvs/getRemark`,  
+    GetRoles: `${BASEURL}/api/Roles`,  
+    GetTaskHistory: `${BASEURL}/api/factory/execute/portallvs/getTaskHistory`,  
+    GetTopCustomer: `${BASEURL}/api/factory/execute/portallvs/getTop10Customers`,  
+    GetTopItems: `${BASEURL}/api/factory/execute/portallvs/getTop10Items`,
+    GetTopModel: `${BASEURL}/api/factory/execute/portallvs/getTop10Models`,
   };
   
-
+ 
   
-
   

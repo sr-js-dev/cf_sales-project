@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import * as Auth from '../../components/auth'
 import DatePicker from "react-datepicker";
+// import DateTimePicker from "react-datetime-picker";
 import SessionManager from '../../components/session_manage';
 import API from '../../components/api'
 import Axios from 'axios';
@@ -80,6 +81,10 @@ class Taskform extends Component {
 
     getEmployee = () => {
         this.props.detailmode()
+        if(this.props.customerNewCreate){
+            
+            this.setState({val2:1})
+        }
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetEmployee, headers)
         .then(result => {
@@ -99,6 +104,7 @@ class Taskform extends Component {
     }
 
     handleSubmit = (event) => {
+        this._isMounted = true;
         event.preventDefault();
         const clientFormData = new FormData(event.target);
         const data = {};
@@ -129,7 +135,9 @@ class Taskform extends Component {
                     if(!this.props.customerNewCreate){
                         this.props.onGetTask();
                     }
-                    this.setState({selectCustomerLabel:"", selectCustomerValue:"", orderdate: ''})
+                    if(this._isMounted){
+                        this.setState({selectCustomerLabel:"", selectCustomerValue:"", orderdate: ''})
+                    }
                 }
             });
             return tempArray;
@@ -250,6 +258,10 @@ class Taskform extends Component {
                         {trls('Deadline')}  
                         </Form.Label>
                         <Col sm="9" className="product-text" style={{height:"auto", paddingBottom:20}}>
+                        {/* <DateTimePicker
+                            onChange={this.onChange}
+                            value={this.state.date}
+                        /> */}
                             {!this.state.orderdate ? (
                                 <DatePicker name="deadline" className="myDatePicker" selected={new Date()} onChange={date =>this.setState({orderdate:date})} />
                             ) : <DatePicker name="deadline" className="myDatePicker" selected={this.state.orderdate} onChange={date =>this.setState({orderdate:date})} />

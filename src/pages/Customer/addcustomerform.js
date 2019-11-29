@@ -24,12 +24,19 @@ class Customerform extends Component {
     componentWillUnmount() {
         this._isMounted = false;
     }
+
     componentDidMount() {
 
     }
+
     creteNewTask = (newId) =>{
         this.props.createTask(newId)
     }
+
+    getCustomer = () =>{
+        this.props.onGetCustomer()
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -59,11 +66,10 @@ class Customerform extends Component {
                   },
                   {
                     label: 'Cancel',
-                    onClick: () => {}
+                    onClick: () => {this.getCustomer()}
                   }
                 ]
               });
-            // this.props.onGetCustomer();
         });
     }
     render(){

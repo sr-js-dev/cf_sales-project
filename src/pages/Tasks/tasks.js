@@ -10,6 +10,7 @@ import SessionManager from '../../components/session_manage';
 import API from '../../components/api'
 import Axios from 'axios';
 import Updatetask from './updatetask.js'
+import Taskhistory from './taskhistory.js'
 
 const mapStateToProps = state => ({
      ...state.auth,
@@ -144,6 +145,24 @@ taskUpdate = (event) => {
         }
     });
 }
+
+viewHistory = (event) => {
+        
+    this._isMounted = true;
+    let taskid=event.currentTarget.id;
+    let params = {
+        taskid:taskid
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.GetTaskHistory, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            this.setState({modalViewShow: true})
+            this.setState({viewHistoryData: result.data.Items})
+        }
+    });
+}
+
 detailmode = () =>{
     this.setState({taskId: ""})
     this.setState({taskflag: false})
@@ -181,6 +200,11 @@ render () {
                                 onGetTaskData={()=> this.getTasksData()}
                                 detailmode={this.detailmode}
                         /> 
+                        <Taskhistory
+                            show={this.state.modalViewShow}
+                            onHide={() => this.setState({modalViewShow: false})}
+                            viewHistoryData = {this.state.viewHistoryData}
+                        />
                     </Form>
                 </div>
                 <div className="table-responsive">
@@ -226,7 +250,8 @@ render () {
                                     <td>{data.taskStatus}</td>
                                     <td >
                                         <Row style={{justifyContent:"center"}}>
-                                            <img src={require("../../assets/images/icon-draft.svg")} id={data.Id} className="statu-item" onClick={this.taskUpdate} alt="Draft"/>
+                                            <i id={data.Id} className="fas fa-edit" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.taskUpdate}></i>
+                                            <i id={data.Id} className="fas fa-eye" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.viewHistory}></i>
                                         </Row>
                                     </td>
                                 </tr>

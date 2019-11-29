@@ -13,12 +13,14 @@ import { trls } from '../../components/translate';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import 'datatables.net';
+import * as authAction  from '../../actions/authAction';
 
 
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
-    
+    blankdispatch: () =>
+              dispatch(authAction.blankdispatch()),
 });
 class Userregister extends Component {
     _isMounted = false
@@ -100,7 +102,7 @@ class Userregister extends Component {
         })
         .then(response => {
             this.setState({userUpdateData: response})
-            this.setState({modalShow:true, mode:"update",userID:userID, flag:true})
+            this.setState({modalShow:true, mode:"update", updateflag: true, userID:userID, flag:true})
         });
     }
     viewUserData = (event) => {
@@ -109,6 +111,7 @@ class Userregister extends Component {
         Axios.get(API.GetUserDataById+event.currentTarget.id, headers)
         .then(result => {
             if(this._isMounted){
+               
                 this.setState({userUpdateData: result.data})
                 this.setState({modalShow:true, mode:"view", flag:true})
             }
@@ -121,6 +124,10 @@ class Userregister extends Component {
             this.setState({loading:true})
             this.getUserData();               
         });
+    }
+
+    removeDetail = () => {
+        this.setState({updateflag: false})
     }
     userDeleteConfirm = (event) => {
         this.setState({userId:event.currentTarget.id})
@@ -140,6 +147,10 @@ class Userregister extends Component {
               }
             ]
           });
+    }
+    onAddformHide = () => {
+        this.setState({modalShow: false})
+        this.props.blankdispatch()
     }
     render () {
         let userData=this.state.userData;
@@ -164,10 +175,13 @@ class Userregister extends Component {
                             <Adduserform
                                 show={this.state.modalShow}
                                 mode={this.state.mode}
-                                onHide={() => this.setState({modalShow: false})}
+                                onHide={() => this.onAddformHide()}
+                                // onHide={() => this.setState({modalShow: false})}
                                 onGetUser={() => this.getUserData()}
                                 userUpdateData={this.state.userUpdateData}
                                 userID={this.state.userID}
+                                updateflag={this.state.updateflag}
+                                removeDetail={this.removeDetail}
                             />  
                         </Form>
                     </div>
