@@ -8,8 +8,6 @@ import SessionManager from '../../components/session_manage';
 import API from '../../components/api'
 import Axios from 'axios';
 import { trls } from '../../components/translate';
-import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css'
-
 
 const mapStateToProps = state => ({ 
     ...state,
