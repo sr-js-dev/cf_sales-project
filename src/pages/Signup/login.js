@@ -65,7 +65,7 @@ class Login extends React.Component {
                             />
                         </Form.Group>
                         <Form.Group as={Row} controlId="form">
-                            <Form.Control type="text" name="username" autocomplete="off" className="login-input-email" placeholder={trls("Username")}/>
+                            <Form.Control type="text" name="username" className="login-input-email" placeholder={trls("Username")}/>
                         </Form.Group>
                         <Form.Group as={Row} controlId="form">
                             <Form.Control type="password" name="password" className="login-input-password" placeholder={trls("Password")}/>

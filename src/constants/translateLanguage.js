@@ -188,7 +188,10 @@ export const TRANSLATIONS = {
       ChangeDate: 'ChangeDate',
       Top_Customers: 'Top 10 Customers',
       Top_Items: 'Top 10 Items',
-      Top_Models: 'Top 10 Models'
+      Top_Models: 'Top 10 Models',
+      Answer_visit_report: 'Answer Visit Report',
+      Question: 'Question',
+      Answer: 'Answer'
     },
 
 
@@ -381,6 +384,9 @@ export const TRANSLATIONS = {
       ChangeDate: 'VeranderingDatum',
       Top_Customers: 'Top 10 Klanten',
       Top_Items: 'Top 10 Items',
-      Top_Models: 'Top 10 Modellen'
+      Top_Models: 'Top 10 Modellen',
+      Answer_visit_report: 'Antwoord Bezoek Verslag Doen Van',
+      Question: 'Vraag',
+      Answer: 'Antwoord'
     }
   };

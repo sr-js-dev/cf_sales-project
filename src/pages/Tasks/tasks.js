@@ -82,7 +82,7 @@ getTasksData = () => {
                     "paginate": {
                         "previous": trls('Previous'),
                         "next": trls('Next')
-                    }
+                    },
                 }
                 }
           );
@@ -162,6 +162,7 @@ viewHistory = (event) => {
         }
     });
 }
+
 
 detailmode = () =>{
     this.setState({taskId: ""})
@@ -249,9 +250,9 @@ render () {
                                     <td>{data.createdby}</td>
                                     <td>{data.taskStatus}</td>
                                     <td >
-                                        <Row style={{justifyContent:"center"}}>
+                                        <Row style={{justifyContent:"space-between"}}>
                                             <i id={data.Id} className="fas fa-edit" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.taskUpdate}></i>
-                                            <i id={data.Id} className="fas fa-eye" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.viewHistory}></i>
+                                            <i id={data.Id} className="fa fa-history" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.viewHistory}></i>
                                         </Row>
                                     </td>
                                 </tr>

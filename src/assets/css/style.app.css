@@ -114,10 +114,11 @@ margin: 0.375rem;
   border-width: 1.5px;
   border-color: #E8EEF1;
   padding-top: 0px;
-  margin-top: 10px;
+  margin-top: 0px;
+  padding-bottom: 0px;
 }
 .purchase-order-table{
-height: 600px;
+height: 300px;
 }
 .login-page{
 text-align: center;

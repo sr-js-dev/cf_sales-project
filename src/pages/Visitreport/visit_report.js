@@ -9,6 +9,8 @@ import SessionManager from '../../components/session_manage';
 import API from '../../components/api'
 import Axios from 'axios';
 import history from '../../history';
+import Visitanswer from './visit_answer.js'
+
 const mapStateToProps = state => ({
      ...state.auth,
 });
@@ -49,7 +51,7 @@ getTasksData = () => {
                   "paginate": {
                     "previous": trls('Previous'),
                     "next": trls('Next')
-                  }
+                  },
               }
             }
           );
@@ -58,8 +60,8 @@ getTasksData = () => {
 componentWillUnmount() {
 }
 componentWillReceiveProps() {
-    $('#example').dataTable().fnDestroy();
-    $('#example').dataTable(
+    $('#example-visitreport').dataTable().fnDestroy();
+    $('#example-visitreport').dataTable(
       {
         "language": {
             "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
@@ -71,7 +73,7 @@ componentWillReceiveProps() {
             "paginate": {
               "previous": trls('Previous'),
               "next": trls('Next')
-            }
+            },
         }
       }
     );
@@ -103,6 +105,32 @@ formatDate = (startdate) =>{
     formatDate = dd+'-'+mm+'-'+yyyy;
     return formatDate;
 }
+
+viewAnswer = (event) => {
+        
+    this._isMounted = true;
+    let visitreportid=event.currentTarget.id;
+    let params = {
+        visitreportid:visitreportid
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.GetVisitReportHeader, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            this.setState({viewHeader: result.data.Items})
+            Axios.post(API.GetVisitReportLines, params, headers)
+            .then(result => {
+                if(this._isMounted){    
+                    this.setState({modalViewShow: true})
+                    this.setState({viewLine: result.data.Items})
+                }
+            });
+        }
+    });
+    
+
+}
+
 render () {
     let visitreports = this.state.visitreports
     if(visitreports){
@@ -120,6 +148,12 @@ render () {
                     <Form inline style={{width:"100%"}}>
                         <Button variant="primary" onClick={this.createVisitReport}><i className="fas fa-plus" style={{marginRight:"10px"}}></i>{trls('Add_VisitReport')}</Button>   
                     </Form>
+                    <Visitanswer
+                        show={this.state.modalViewShow}
+                        onHide={() => this.setState({modalViewShow: false})}
+                        viewHeader = {this.state.viewHeader}
+                        viewLine = {this.state.viewLine}
+                    />
                 </div>
                 <div className="table-responsive">
                     <table id="example-visitreport" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
@@ -142,7 +176,8 @@ render () {
                                     <td>{data.CreatedBy}</td>
                                     <td >
                                         <Row style={{justifyContent:"center"}}>
-                                            <img src={require("../../assets/images/icon-draft.svg")} id={data.Id} className="statu-item" onClick={this.updateVisit} alt="Draft"/>
+                                            <i id={data.Id} className="fas fa-edit" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.updateVisit}></i>
+                                            <i id={data.Id} className="fas fa-eye" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.viewAnswer}></i>
                                         </Row>
                                     </td>
                                 </tr>

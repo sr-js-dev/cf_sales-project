@@ -46,7 +46,10 @@ export default {
     GetTopCustomer: `${BASEURL}/api/factory/execute/portallvs/getTop10Customers`,  
     GetTopItems: `${BASEURL}/api/factory/execute/portallvs/getTop10Items`,
     GetTopModel: `${BASEURL}/api/factory/execute/portallvs/getTop10Models`,
+    GetVisitReportHeader: `${BASEURL}/api/factory/execute/portallvs/getVisitReportHeader`,
+    GetVisitReportLines: `${BASEURL}/api/factory/execute/portallvs/getVisitReportLines`,
   };
+  
   
  
   
