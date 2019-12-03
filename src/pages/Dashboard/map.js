@@ -28,7 +28,7 @@ class MapTest extends React.Component {
     Map = withScriptjs(
       withGoogleMap(props => (
         <GoogleMap
-          defaultZoom={12}
+          defaultZoom={10}
           center={props.center}
           onClick={props.onClick}
         >

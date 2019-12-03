@@ -50,6 +50,7 @@ class Dashboard extends Component {
         this.getTopCustomer();
         this.getTopItem();
         this.getTopModel();
+        this.getCustomerData();
     }
     getLocationIpPosition = () =>{
         // (async () => {
@@ -65,6 +66,31 @@ class Dashboard extends Component {
             //   console.log('222222', "Geolocation is not supported by this browser.")
           }
     }
+
+    getCustomerData = () =>{
+        let params = {
+            customerId: Auth.getUserName()
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetCustomer, params, headers)
+        .then(result => {
+            this.setState({customer: result.data.Items});
+        });
+    }
+
+    getCustomerCoordinatesById = (val) =>{
+        let params = {
+            customerid : val.value
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetCustomerCoordinatesById, params, headers)
+        .then(result => {
+            if(result.data.Items[0].LAT&&result.data.Items[0].LONG){
+                this.setState({center:{lat: parseFloat(result.data.Items[0].LAT), lng: parseFloat(result.data.Items[0].LONG)}})
+            }
+        });
+    }
+
     showPosition = (position)=>{
         
         this.setState({center:{lat: position.coords.latitude, lng:position.coords.longitude }})
@@ -138,7 +164,6 @@ class Dashboard extends Component {
         var header = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetTopItems, header)
         .then(result => {
-            console.log('112', result)
             this.setState({topItem:result.data.Items})
         }
         )
@@ -148,7 +173,6 @@ class Dashboard extends Component {
         var header = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetTopModel, header)
         .then(result => {
-            console.log('123', result)
             this.setState({topModel:result.data.Items})
         }
         )
@@ -156,7 +180,7 @@ class Dashboard extends Component {
 
     handleMarkerClick = (params) => {
         this.setState({
-            customerArray: this.state.customerArray.map(marker => {
+            user_marker: this.state.user_marker.map(marker => {
                 if (marker.CustomerId === params.CustomerId) {
                     return {
                         ...marker,
@@ -173,7 +197,7 @@ class Dashboard extends Component {
     }
     handleMarkerClose = () => {
 		this.setState({
-            customerArray: this.state.customerArray.map(marker => {
+            user_marker: this.state.user_marker.map(marker => {
                 return {
                     ...marker,
                     showInfo: false,
@@ -202,7 +226,7 @@ class Dashboard extends Component {
         customerData.map((data, index) => {
             position_array.lat=data.LAT
             position_array.lng=data.LONG
-            distance = this.getDistance(e.target.value, position_array);
+            distance = this.getDistance(this.state.currentValue, position_array);
             if(distance<=e.target.value){
                 data.position_flag=true
                 user_marker.push(data)
@@ -224,6 +248,7 @@ class Dashboard extends Component {
         let distance = 2 * 6371 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return distance;
     }
+
     formatNumber = (num) => {
         if(num){
             var value = num.toFixed(2);
@@ -233,11 +258,14 @@ class Dashboard extends Component {
         }
        
     }
+
+    
     render(){   
         let number = 0;
         let topCustmer = [];
         let topItem = [];
         let topModel = [];
+        let customer = [];
         if(this.state.topCustmer){
             topCustmer=this.state.topCustmer;
         }
@@ -249,6 +277,9 @@ class Dashboard extends Component {
         }
         if(this.state.tasksnumber[0]){
             number = this.state.tasksnumber
+        }
+        if(this.state.customer){
+            customer = this.state.customer.map( s => ({value:s.key,label:s.value}) );
         }
     
         let map_lang=trls('map_lang')
@@ -401,10 +432,10 @@ class Dashboard extends Component {
                         <Col sm={4} style={{padding:15, display: "flex", justifyContent:"space-between"}}>
                             <Select
                                 name="customer"
-                                // options={customer}
+                                options={customer}
                                 className="select-customer-dashboard"
                                 placeholder={trls('Select_Customer')}
-                                onChange={val => this.setState({val1:val})}
+                                onChange={val => this.getCustomerCoordinatesById(val)}
                             />
                             <Button variant="outline-success" style={{height:55, width:55, paddingTop:-10, color: '#F90404', fontSize:25}} onClick={this.getLocationIpPosition}><i className="fas fa-sync-alt"></i></Button>
                         </Col>

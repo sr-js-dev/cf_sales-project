@@ -114,11 +114,9 @@ class Updatetask  extends Component {
             subject: data.subject,
             Gewijzig: ''
         }
-        console.log('3333333333333', params);
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.post(API.PutTask , params, headers)
         .then(result => {
-            console.log('111111111111', result)
             this.props.onHide();
             this.props.onGetTaskData();
         });

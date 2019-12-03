@@ -163,7 +163,6 @@ viewHistory = (event) => {
     });
 }
 
-
 detailmode = () =>{
     this.setState({taskId: ""})
     this.setState({taskflag: false})
