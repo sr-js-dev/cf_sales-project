@@ -79,6 +79,7 @@ class Dashboard extends Component {
     }
 
     getCustomerCoordinatesById = (val) =>{
+        this.setState({customerId: val.value})
         let params = {
             customerid : val.value
         }
@@ -87,6 +88,7 @@ class Dashboard extends Component {
         .then(result => {
             if(result.data.Items[0].LAT&&result.data.Items[0].LONG){
                 this.setState({center:{lat: parseFloat(result.data.Items[0].LAT), lng: parseFloat(result.data.Items[0].LONG)}})
+                this.getMarsers()
             }
         });
     }
@@ -218,16 +220,20 @@ class Dashboard extends Component {
     }
 
     changeDistanceValue = (e) => {
+        this.setState({currentValue:e.target.value})
+        this.getMarsers();
+    }
+
+    getMarsers = () =>{
         let customerData = this.state.customerArray;
         let position_array = [];
         let distance = ''
         let user_marker = [];
-        this.setState({currentValue:e.target.value})
         customerData.map((data, index) => {
             position_array.lat=data.LAT
             position_array.lng=data.LONG
             distance = this.getDistance(this.state.currentValue, position_array);
-            if(distance<=e.target.value){
+            if(distance<this.state.currentValue && data.CustomerId!==this.state.CustomerId){
                 data.position_flag=true
                 user_marker.push(data)
             }
