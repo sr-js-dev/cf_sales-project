@@ -11,6 +11,7 @@ import API from '../../components/api'
 import Axios from 'axios';
 import Updatetask from './updatetask.js'
 import Taskhistory from './taskhistory.js'
+import * as Auth from '../../components/auth'
 
 const mapStateToProps = state => ({
      ...state.auth,
@@ -27,7 +28,9 @@ class Tasks extends Component {
             loading:true,
             tasksData:[],
             currentDate: new Date(),
-            search_flag: true
+            search_flag: true,
+            attachTaskFileFlag: false,
+            arrayFilename: []
         };
       }
 componentDidMount() {
@@ -109,25 +112,6 @@ formatDate = (startdate) =>{
 }
 componentWillUnmount() {
 }
-componentWillReceiveProps() {
-    $('#example').dataTable().fnDestroy();
-    $('#example').dataTable(
-      {
-        "language": {
-            "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
-            "zeroRecords": "Nothing found - sorry",
-            "info": trls("Show_page")+" _PAGE_ of _PAGES_",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(filtered from _MAX_ total records)",
-            "search": trls('Search'),
-            "paginate": {
-              "previous": trls('Previous'),
-              "next": trls('Next')
-            }
-        }
-      }
-    );
-  }
 
 taskUpdate = (event) => {
         
@@ -147,7 +131,6 @@ taskUpdate = (event) => {
 }
 
 viewHistory = (event) => {
-        
     this._isMounted = true;
     let taskid=event.currentTarget.id;
     let params = {
@@ -167,6 +150,94 @@ detailmode = () =>{
     this.setState({taskId: ""})
     this.setState({taskflag: false})
 }
+
+openUploadFile = (e) =>{
+    this.setState({attachtaskId:e.currentTarget.id});
+    $('#inputFile').show();
+    $('#inputFile').focus();
+    $('#inputFile').click();
+    $('#inputFile').hide();
+}
+
+onChangeFileUpload = (e) => {
+    let filename = [];
+    let arrayFilename = this.state.arrayFilename
+    filename.key = this.state.attachtaskId;
+    filename.name = "Open";
+    arrayFilename.push(filename)
+    this.setState({arrayFilename: arrayFilename})
+    this.setState({filename: e.target.files[0].name})
+    this.setState({file:e.target.files[0]})
+    this.fileUpload(e.target.files[0])
+    this.setState({uploadflag:1})
+}
+
+fileUpload(file){
+    var formData = new FormData();
+    formData.append('file', file);// file from input
+    var headers = {
+        "headers": {
+            "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+    }
+    Axios.post(API.PostFileUpload, formData, headers)
+    .then(result => {
+        if(result.data.Id){
+            this.postTaskDocuments(result.data.Id);
+        }
+    })
+    .catch(err => {
+    });
+}
+
+postTaskDocuments = (docuId) => {
+    this._isMounted = true;
+    let params = {
+        taskid: this.state.attachtaskId,
+        documentid: docuId
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.PostTaskDocuments, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            this.setState({attachTaskFileFlag:true})
+            // this.downLoadAttachFile(docuId)
+            
+        }
+    });
+}
+
+// downLoadAttachFile = (docuId) => {
+//     window.location = API.DownLoadTaskFile+docuId
+// }
+
+getAttachFileName = (id) =>{
+    let tempArray = [];
+    let filemane = '';
+    tempArray = this.state.arrayFilename;
+    tempArray.map((data, index) => {
+        if(data.key===String(id)){
+            filemane = data.name;
+        }
+        return tempArray;
+    })
+    return filemane;
+}
+
+getTaskDocuments = (taskId) =>{
+    this._isMounted = true;
+    let params = {
+        taskid: taskId,
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.GetTaskDocuments, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            console.log('123', result)
+        }
+    });
+}
+
 
 render () {
     let tasksData = this.state.tasksData
@@ -220,6 +291,7 @@ render () {
                                 <th>{trls('Subject')}</th>
                                 <th>{trls('CreateBy')}</th>
                                 <th>{trls('Status')}</th>
+                                <th>{trls('Attachment')}</th>
                                 <th>{trls('Action')}</th>
                             </tr>
                             <tr style={{display:'none'}}>
@@ -232,6 +304,7 @@ render () {
                                 <th id="Subject">{trls('Subject')}</th>
                                 <th id="CreateBy">{trls('CreateBy')}</th>
                                 <th id="Status">{trls('Status')}</th>
+                                <th id="Attachment">{trls('Attachment')}</th>
                                 <th id="Action">{trls('Action')}</th>
                             </tr>
                         </thead>
@@ -248,6 +321,13 @@ render () {
                                     <td>{data.Subject}</td>
                                     <td>{data.createdby}</td>
                                     <td>{data.taskStatus}</td>
+                                    <td>
+                                        <Row>
+                                            <i id={data.Id} className="fas fa-file-upload" style={{fontSize:20, cursor: "pointer", paddingLeft: 10, paddingRight:20}} onClick={this.openUploadFile}></i>
+                                            <div id={data.Id} style={{color:"#069AF8", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}}>{trls('View')}</div>
+                                            <input id="inputFile" type="file"  required accept="*.*" onChange={this.onChangeFileUpload} style={{display: "none"}} />
+                                        </Row>
+                                    </td>
                                     <td >
                                         <Row style={{justifyContent:"space-between"}}>
                                             <i id={data.Id} className="fas fa-edit" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.taskUpdate}></i>

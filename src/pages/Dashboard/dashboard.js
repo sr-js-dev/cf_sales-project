@@ -68,13 +68,17 @@ class Dashboard extends Component {
     }
 
     getCustomerData = () =>{
+        this._isMounted=true;
         let params = {
             customerId: Auth.getUserName()
         }
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.post(API.GetCustomer, params, headers)
         .then(result => {
-            this.setState({customer: result.data.Items});
+            if(this._isMounted){
+                this.setState({customer: result.data.Items});
+            }
+            
         });
     }
 
@@ -88,7 +92,7 @@ class Dashboard extends Component {
         .then(result => {
             if(result.data.Items[0].LAT&&result.data.Items[0].LONG){
                 this.setState({center:{lat: parseFloat(result.data.Items[0].LAT), lng: parseFloat(result.data.Items[0].LONG)}})
-                this.getMarsers()
+                this.getMarkers()
             }
         });
     }
@@ -221,10 +225,10 @@ class Dashboard extends Component {
 
     changeDistanceValue = (e) => {
         this.setState({currentValue:e.target.value})
-        this.getMarsers();
+        this.getMarkers();
     }
 
-    getMarsers = () =>{
+    getMarkers = () =>{
         let customerData = this.state.customerArray;
         let position_array = [];
         let distance = ''
@@ -233,7 +237,7 @@ class Dashboard extends Component {
             position_array.lat=data.LAT
             position_array.lng=data.LONG
             distance = this.getDistance(this.state.currentValue, position_array);
-            if(distance<this.state.currentValue && data.CustomerId!==this.state.CustomerId){
+            if(distance<this.state.currentValue && distance!==0){
                 data.position_flag=true
                 user_marker.push(data)
             }
@@ -252,6 +256,7 @@ class Dashboard extends Component {
             Math.sin(dLon / 2) * Math.sin(dLon / 2)
             ;
         let distance = 2 * 6371 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        
         return distance;
     }
 

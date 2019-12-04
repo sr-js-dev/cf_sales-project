@@ -191,7 +191,10 @@ export const TRANSLATIONS = {
       Top_Models: 'Top 10 Models',
       Answer_visit_report: 'Answer Visit Report',
       Question: 'Question',
-      Answer: 'Answer'
+      Answer: 'Answer',
+      Attachment: 'Attachment',
+      Choose_File: "Choose File",
+      View: 'View'
     },
 
 
@@ -387,6 +390,9 @@ export const TRANSLATIONS = {
       Top_Models: 'Top 10 Modellen',
       Answer_visit_report: 'Antwoord Bezoek Verslag Doen Van',
       Question: 'Vraag',
-      Answer: 'Antwoord'
+      Answer: 'Antwoord',
+      Attachment: 'Gehechtheid',
+      Choose_File: 'Kies bestand',
+      View: 'Uitzicht'
     }
   };

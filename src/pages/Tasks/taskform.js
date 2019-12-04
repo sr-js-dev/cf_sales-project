@@ -9,6 +9,7 @@ import SessionManager from '../../components/session_manage';
 import API from '../../components/api'
 import Axios from 'axios';
 import { trls } from '../../components/translate';
+import $ from 'jquery';
 
 const mapStateToProps = state => ({ 
     ...state,
@@ -139,10 +140,54 @@ class Taskform extends Component {
                         this.setState({selectCustomerLabel:"", selectCustomerValue:"", orderdate: ''})
                     }
                 }
+                // this.sendToEmployeeEmail();
             });
             return tempArray;
         })
     }
+
+    // sendToEmployeeEmail = () =>{
+    //     let params = {
+    //         To:'johan@johanboerema.nl',
+    //         Subject: 'Er is een nieuwe taak toegewezen',
+    //         Body: 'Er is een nieuwe taak toegewezen in de CF Sales Portal'
+    //     }
+    //     var headers = SessionManager.shared().getAuthorizationHeader();
+    //     Axios.post(API.PostEmail, params, headers)
+    //     .then(result => {
+    //         console.log('111112222333', result)
+    //     });
+    // }
+
+    openUploadFile = () =>{
+        $('#inputFile').show();
+        $('#inputFile').focus();
+        $('#inputFile').click();
+        $('#inputFile').hide();
+    }
+
+    onChangeFileUpload = (e) => {
+        this.setState({filename: e.target.files[0].name})
+        this.setState({file:e.target.files[0]})
+        this.fileUpload(e.target.files[0])
+        this.setState({uploadflag:1})
+    }
+
+    fileUpload(file){
+        var formData = new FormData();
+        formData.append('file', file);// file from input
+        var headers = {
+            "headers": {
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            }
+        }
+        Axios.post(API.PostFileUpload, formData, headers)
+        .then(result => {
+        })
+        .catch(err => {
+        });
+    }
+
     render(){
         let taskType = [];
         let customer = [];
@@ -276,6 +321,18 @@ class Taskform extends Component {
                             <Form.Control type="text" name="subject" required placeholder={trls('Subject')} />
                         </Col>
                     </Form.Group>
+                    {/* <Form.Group as={Row} controlId="formPlaintextPassword">
+                        <Form.Label column sm="3">
+                        {trls('Attachments')}   
+                        </Form.Label>
+                        <Col sm="9" className="product-text" style={{height:"auto"}}>
+                            <Button type="button" style={{width:"auto", height:"35px", fontSize:"14px"}} onClick={this.openUploadFile}>{trls('Choose_File')}</Button>
+                            <Form.Label style={{color:"#0903FB", paddingLeft:"10px"}}>
+                                <u>{this.state.filename}</u>
+                            </Form.Label>
+                            <input id="inputFile" type="file"  required accept="*.*" onChange={this.onChangeFileUpload} style={{display: "none"}} />
+                        </Col>
+                    </Form.Group> */}
                     <Form.Group style={{textAlign:"center"}}>
                         <Button type="submit" style={{width:"100px"}}>{trls('Save')}</Button>
                     </Form.Group>

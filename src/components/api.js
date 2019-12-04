@@ -49,9 +49,11 @@ export default {
     GetVisitReportHeader: `${BASEURL}/api/factory/execute/portallvs/getVisitReportHeader`,
     GetVisitReportLines: `${BASEURL}/api/factory/execute/portallvs/getVisitReportLines`,
     GetCustomerCoordinatesById: `${BASEURL}/api/factory/execute/portallvs/getCustomerCoordinatesById`,
+    PostEmail: `${BASEURL}/api/email`,
+    PostFileUpload: `${BASEURL}/api/factory/upload-file`,
+    PostTaskDocuments: `${BASEURL}/api/factory/execute/portallvs/postTaskDocuments`,
+    GetTaskDocuments: `${BASEURL}/api/factory/execute/portallvs/getTaskDocuments`,
+    DownLoadTaskFile: `${BASEURL}/api/factory/download-file/`,
   };
-  
-  
- 
   
   

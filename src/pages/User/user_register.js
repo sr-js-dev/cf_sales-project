@@ -35,6 +35,7 @@ class Userregister extends Component {
       }
     componentDidMount() {
         this._isMounted=true
+        
         this.getUserData()
     }
     componentWillUnmount() {
