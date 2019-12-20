@@ -54,6 +54,10 @@ export default {
     PostTaskDocuments: `${BASEURL}/api/factory/execute/portallvs/postTaskDocuments`,
     GetTaskDocuments: `${BASEURL}/api/factory/execute/portallvs/getTaskDocuments`,
     DownLoadTaskFile: `${BASEURL}/api/factory/download-file/`,
+    PostVisitreportDocuments: `${BASEURL}/api/factory/execute/portallvs/postVisitreportDocuments`,
+    GetVisitreportDocuments: `${BASEURL}/api/factory/execute/portallvs/getVisitreportDocuments`,
+    PostCustomerDocuments: `${BASEURL}/api/factory/execute/portallvs/postCustomerDocuments`,
+    GetCustomerDocuments: `${BASEURL}/api/factory/execute/portallvs/getCustomerDocuments`,
   };
   
   

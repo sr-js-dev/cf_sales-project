@@ -11,7 +11,9 @@ import API from '../../components/api'
 import Axios from 'axios';
 import Updatetask from './updatetask.js'
 import Taskhistory from './taskhistory.js'
+import Taskdocument from './taskdocument'
 import * as Auth from '../../components/auth'
+import SweetAlert from 'sweetalert';
 
 const mapStateToProps = state => ({
      ...state.auth,
@@ -29,7 +31,6 @@ class Tasks extends Component {
             tasksData:[],
             currentDate: new Date(),
             search_flag: true,
-            attachTaskFileFlag: false,
             arrayFilename: []
         };
       }
@@ -200,16 +201,21 @@ postTaskDocuments = (docuId) => {
     Axios.post(API.PostTaskDocuments, params, headers)
     .then(result => {
         if(this._isMounted){    
-            this.setState({attachTaskFileFlag:true})
-            // this.downLoadAttachFile(docuId)
-            
+            SweetAlert({
+                title: trls('Success'),
+                icon: "success",
+                button: "OK",
+              });
         }
+    })
+    .catch(err => {
+        SweetAlert({
+            title: trls('Fail'),
+            icon: "warning",
+            button: "OK",
+          });
     });
 }
-
-// downLoadAttachFile = (docuId) => {
-//     window.location = API.DownLoadTaskFile+docuId
-// }
 
 getAttachFileName = (id) =>{
     let tempArray = [];
@@ -224,20 +230,24 @@ getAttachFileName = (id) =>{
     return filemane;
 }
 
-getTaskDocuments = (taskId) =>{
+getTaskDocuments = (event) =>{
     this._isMounted = true;
+    let taskData=event.currentTarget.id;
+    let arrayTaskData = [];
+    arrayTaskData = taskData.split(',');
     let params = {
-        taskid: taskId,
+        taskid:parseInt(arrayTaskData[0])
     }
     var headers = SessionManager.shared().getAuthorizationHeader();
     Axios.post(API.GetTaskDocuments, params, headers)
     .then(result => {
         if(this._isMounted){    
-            console.log('123', result)
+            this.setState({modaldocumentShow: true})
+            this.setState({documentData: result.data.Items})
+            this.setState({documentHeader: arrayTaskData})
         }
     });
 }
-
 
 render () {
     let tasksData = this.state.tasksData
@@ -276,6 +286,12 @@ render () {
                             onHide={() => this.setState({modalViewShow: false})}
                             viewHistoryData = {this.state.viewHistoryData}
                         />
+                        <Taskdocument
+                            show={this.state.modaldocumentShow}
+                            onHide={() => this.setState({modaldocumentShow: false})}
+                            documentData = {this.state.documentData}
+                            documentHeader = {this.state.documentHeader}
+                        />
                     </Form>
                 </div>
                 <div className="table-responsive">
@@ -292,7 +308,7 @@ render () {
                                 <th>{trls('CreateBy')}</th>
                                 <th>{trls('Status')}</th>
                                 <th>{trls('Attachment')}</th>
-                                <th>{trls('Action')}</th>
+                                <th style={{width:50}}>{trls('Action')}</th>
                             </tr>
                             <tr style={{display:'none'}}>
                                 <th id="Id">{trls('Id')}</th>
@@ -324,7 +340,7 @@ render () {
                                     <td>
                                         <Row>
                                             <i id={data.Id} className="fas fa-file-upload" style={{fontSize:20, cursor: "pointer", paddingLeft: 10, paddingRight:20}} onClick={this.openUploadFile}></i>
-                                            <div id={data.Id} style={{color:"#069AF8", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}}>{trls('View')}</div>
+                                            <div id={data.Id+','+data.CustomerName+','+data.employee+','+data.Subject} style={{color:"#000", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}} onClick={this.getTaskDocuments}>{trls('View')}</div>
                                             <input id="inputFile" type="file"  required accept="*.*" onChange={this.onChangeFileUpload} style={{display: "none"}} />
                                         </Row>
                                     </td>

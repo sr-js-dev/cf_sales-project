@@ -10,6 +10,9 @@ import API from '../../components/api'
 import Axios from 'axios';
 import history from '../../history';
 import Visitanswer from './visit_answer.js'
+import Visitdocument from './visitdocument'
+import * as Auth from '../../components/auth'
+import SweetAlert from 'sweetalert';
 
 const mapStateToProps = state => ({
      ...state.auth,
@@ -24,7 +27,8 @@ class Visitreport extends Component {
         super(props);
         this.state = {  
             loading:true,
-            visitreports:[]
+            visitreports:[],
+            arrayFilename: []
         };
       }
 componentDidMount() {
@@ -59,25 +63,7 @@ getTasksData = () => {
 }
 componentWillUnmount() {
 }
-componentWillReceiveProps() {
-    $('#example-visitreport').dataTable().fnDestroy();
-    $('#example-visitreport').dataTable(
-      {
-        "language": {
-            "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
-            "zeroRecords": "Nothing found - sorry",
-            "info": trls("Show_page")+" _PAGE_ of _PAGES_",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(filtered from _MAX_ total records)",
-            "search": trls('Search'),
-            "paginate": {
-              "previous": trls('Previous'),
-              "next": trls('Next')
-            },
-        }
-      }
-    );
-  }
+
 createVisitReport = () => {
     history.push({
         pathname: '/visit-report/create',
@@ -107,7 +93,6 @@ formatDate = (startdate) =>{
 }
 
 viewAnswer = (event) => {
-        
     this._isMounted = true;
     let visitreportid=event.currentTarget.id;
     let params = {
@@ -127,8 +112,93 @@ viewAnswer = (event) => {
             });
         }
     });
-    
+}
 
+openUploadFile = (e) =>{
+    this.setState({attachvisitId:e.currentTarget.id});
+    $('#inputFile').show();
+    $('#inputFile').focus();
+    $('#inputFile').click();
+    $('#inputFile').hide();
+}
+
+onChangeFileUpload = (e) => {
+    let filename = [];
+    let arrayFilename = this.state.arrayFilename
+    filename.key = this.state.attachtaskId;
+    filename.name = "Open";
+    arrayFilename.push(filename)
+    this.setState({arrayFilename: arrayFilename})
+    this.setState({filename: e.target.files[0].name})
+    this.setState({file:e.target.files[0]})
+    this.fileUpload(e.target.files[0])
+    this.setState({uploadflag:1})
+}
+
+fileUpload(file){
+    var formData = new FormData();
+    formData.append('file', file);// file from input
+    var headers = {
+        "headers": {
+            "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+    }
+    Axios.post(API.PostFileUpload, formData, headers)
+    .then(result => {
+        if(result.data.Id){
+            this.postVisitreportDocuments(result.data.Id);
+        }
+    })
+    .catch(err => {
+    });
+}
+
+postVisitreportDocuments = (docuId) => {
+    this._isMounted = true;
+    let params = {
+        visitreportid: this.state.attachvisitId,
+        documentid: docuId
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.PostVisitreportDocuments, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            SweetAlert({
+                title: trls('Success'),
+                icon: "success",
+                button: "OK",
+              });
+        }
+    })
+    .catch(err => {
+        SweetAlert({
+            title: trls('Fail'),
+            icon: "warning",
+            button: "OK",
+          });
+    });
+}
+
+GetVisitreportDocuments = (event) => {
+    this._isMounted = true;
+    let visitreportid=event.currentTarget.id;
+    let params = {
+        visitreportid:visitreportid
+    }
+    var headers = SessionManager.shared().getAuthorizationHeader();
+    Axios.post(API.GetVisitReportHeader, params, headers)
+    .then(result => {
+        if(this._isMounted){    
+            this.setState({viewHeader: result.data.Items})
+            Axios.post(API.GetVisitreportDocuments, params, headers)
+            .then(result => {
+                if(this._isMounted){    
+                    this.setState({modaldocumentShow: true})
+                    this.setState({documentData: result.data.Items})
+                }
+            });
+        }
+    });
 }
 
 render () {
@@ -154,6 +224,12 @@ render () {
                         viewHeader = {this.state.viewHeader}
                         viewLine = {this.state.viewLine}
                     />
+                     <Visitdocument
+                        show={this.state.modaldocumentShow}
+                        onHide={() => this.setState({modaldocumentShow: false})}
+                        documentData = {this.state.documentData}
+                        viewHeader = {this.state.viewHeader}
+                    />
                 </div>
                 <div className="table-responsive">
                     <table id="example-visitreport" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
@@ -163,6 +239,7 @@ render () {
                                 <th>{trls('Customer')}</th>
                                 <th>{trls('Visit_Date')}</th>
                                 <th>{trls('CreatedBy')}</th>
+                                <th style={{width:100}}>{trls('Attachment')}</th>
                                 <th>{trls('Action')}</th>
                             </tr>
                         </thead>
@@ -174,6 +251,13 @@ render () {
                                     <td>{data.Customer}</td>
                                     <td>{this.formatDate(data.VisitDate)}</td>
                                     <td>{data.CreatedBy}</td>
+                                    <td>
+                                        <Row style={{justifyContent:"center"}}>
+                                            <i id={data.Id} className="fas fa-file-upload" style={{fontSize:20, cursor: "pointer", paddingLeft: 10, paddingRight:20}} onClick={this.openUploadFile}></i>
+                                            <div id={data.Id} style={{color:"#069AF8", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}} onClick={this.GetVisitreportDocuments}>{trls('View')}</div>
+                                            <input id="inputFile" type="file"  required accept="*.*" onChange={this.onChangeFileUpload} style={{display: "none"}} />
+                                        </Row>
+                                    </td>
                                     <td >
                                         <Row style={{justifyContent:"center"}}>
                                             <i id={data.Id} className="fas fa-edit" style={{fontSize:20, cursor: "pointer", paddingLeft: 10}} onClick={this.updateVisit}></i>

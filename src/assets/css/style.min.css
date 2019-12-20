@@ -733,6 +733,7 @@ table {
 }
 
 .menu__link-img-wrap {
+	font-size: 18px;
 	display: inline-block;
 	width: 20px;
 	margin-right: 16px;

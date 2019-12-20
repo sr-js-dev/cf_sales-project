@@ -70,25 +70,6 @@ class Userregister extends Component {
             }
         });
     }
-    componentWillReceiveProps() {
-        $('#example').dataTable().fnDestroy();
-        $('#example').dataTable(
-          {
-            "language": {
-                "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
-                "zeroRecords": "Nothing found - sorry",
-                "info": trls("Show_page")+" _PAGE_ of _PAGES_",
-                "infoEmpty": "No records available",
-                "infoFiltered": "(filtered from _MAX_ total records)",
-                "search": trls('Search'),
-                "paginate": {
-                  "previous": trls('Previous'),
-                  "next": trls('Next')
-                }
-            }
-          }
-        );
-      }
     userUpdate = (event) => {
         let userID=event.currentTarget.id;
         var settings = {
@@ -177,7 +158,6 @@ class Userregister extends Component {
                                 show={this.state.modalShow}
                                 mode={this.state.mode}
                                 onHide={() => this.onAddformHide()}
-                                // onHide={() => this.setState({modalShow: false})}
                                 onGetUser={() => this.getUserData()}
                                 userUpdateData={this.state.userUpdateData}
                                 userID={this.state.userID}
@@ -186,14 +166,14 @@ class Userregister extends Component {
                             />  
                         </Form>
                     </div>
-                    <div className="table-responsive credit-history">
+                    <div className="table-responsive">
                         <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
                                 <th>{trls('UserName')}</th>
                                 <th>{trls('Email')}</th>
                                 <th>{trls('Active')}</th>
-                                <th>{trls('State')}</th>
+                                <th>{trls('Action')}</th>
                             </tr>
                         </thead>
                         {optionarray && !this.state.loading &&(<tbody >
@@ -205,9 +185,9 @@ class Userregister extends Component {
                                         <td><Form.Check inline name="Intrastat" type="checkbox" disabled defaultChecked={data.IsActive} id="Intrastat" /></td>
                                         <td >
                                             <Row style={{justifyContent:"center"}}>
-                                                <img src={require("../../assets/images/icon-cancelled.svg")}id={data.Id} className="statu-item" alt="cancelled" onClick={this.userDeleteConfirm}/>
-                                                <img src={require("../../assets/images/icon-draft.svg")} id={data.Id} className="statu-item" onClick={this.userUpdate} alt="Draft"/>
-                                                <img src={require("../../assets/images/icon-open-box.svg")} id={data.Id} className="statu-item" onClick={this.viewUserData} alt="Draft"/>
+                                                <i id={data.id} className="fas fa-trash-alt statu-item" onClick={this.userDeleteConfirm}></i>
+                                                <i id={data.id} className="fas fa-edit statu-item" onClick={this.userUpdate}></i>
+                                                <i id={data.id} className="fas fa-eye statu-item" onClick={this.viewUserData}></i>
                                             </Row>
                                         </td>
                                     </tr>

@@ -118,7 +118,7 @@ margin: 0.375rem;
   padding-bottom: 0px;
 }
 .purchase-order-table{
-height: 300px;
+  max-height: 300px;
 }
 .login-page{
 text-align: center;
@@ -496,7 +496,7 @@ input:-internal-autofill-selected {
 }
 
 .task-table-tr-past{
-  background-color: #F9BBBB !important; 
+  background-color: #e05f5f !important; 
   color:white !important;
 }
 .css-es53b3-multiValue{
@@ -509,4 +509,27 @@ input:-internal-autofill-selected {
     flex: 0 0 33.333333%;
     max-width: 33.333333%;
   }
+}
+.credit-history{
+  max-height: 300px;
+}
+.modal-header-doc {
+  border: 1px solid #47C0F8;
+  padding: 10px;
+  border-radius: 7px;
+  margin-bottom: 17px;
+}
+.swal-button{
+  background-color: #4e9bea;
+}
+.swal-icon--success__line{
+  background-color: #6ddc2e;
+}
+.swal-icon--success__ring{
+  border: 4px solid hsl(98, 60%, 64%);
+}
+.product-text {
+  height: 50px;
+  padding-left: 20px;
+  /* margin-left: 50px; */
 }

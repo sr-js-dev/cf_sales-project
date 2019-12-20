@@ -45,7 +45,7 @@ class Taskhistory extends Component {
             >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {trls('Task_history')}
+                    {trls('Documents')}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>

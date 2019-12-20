@@ -67,7 +67,6 @@ class Adduserform extends Component {
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetRoles, headers)
         .then(result => {
-            console.log('3333', result)
             this.setState({userRole:result.data})
         });
     }

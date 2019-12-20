@@ -3,6 +3,7 @@ import { Form,Row } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Addcustomerform from './addcustomerform';
+import Customerdocument from './customerdocument';
 import Updatecustomerform from './updatecustomerform';
 import $ from 'jquery';
 import SessionManager from '../../components/session_manage';
@@ -14,6 +15,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import 'datatables.net';
 import history from '../../history';
 import Createtask from '../Tasks/taskform'
+import * as Auth from '../../components/auth'
+import SweetAlert from 'sweetalert';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -28,7 +31,8 @@ class Userregister extends Component {
             customerData:[],
             flag:'',
             userUpdateData:[],
-            loading:true
+            loading:true,
+            arrayFilename: []
         };
       }
     componentDidMount() {
@@ -73,27 +77,8 @@ class Userregister extends Component {
             pathname: '/customer/detail/'+customerId,
           })
     }
-    componentWillReceiveProps() {
-        // $('#example').dataTable().fnDestroy();
-        // $('#example').dataTable(
-        //   {
-        //     "language": {
-        //         "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
-        //         "zeroRecords": "Nothing found - sorry",
-        //         "info": trls("Show_page")+" _PAGE_ of _PAGES_",
-        //         "infoEmpty": "No records available",
-        //         "infoFiltered": "(filtered from _MAX_ total records)",
-        //         "search": trls('Search'),
-        //         "paginate": {
-        //           "previous": trls('Previous'),
-        //           "next": trls('Next')
-        //         }
-        //     }
-        //   }
-        // );
-      }
+
     customerUpdate = (event) => {
-        
         this._isMounted = true;
         let customerId=event.currentTarget.id;
         let params = {
@@ -108,7 +93,6 @@ class Userregister extends Component {
             }
         });
     }
-
     createTask = (newId) => {
         this.setState({modalcreateTaskShow: true, taskflag: true, customerId: newId})
 
@@ -121,6 +105,90 @@ class Userregister extends Component {
 
     detailmode = () =>{
         this.setState({taskflag: false})
+    }
+
+    openUploadFile = (e) =>{
+        this.setState({attachtaskId:e.currentTarget.id});
+        $('#inputFile').show();
+        $('#inputFile').focus();
+        $('#inputFile').click();
+        $('#inputFile').hide();
+    }
+    
+    onChangeFileUpload = (e) => {
+        let filename = [];
+        let arrayFilename = this.state.arrayFilename
+        filename.key = this.state.attachtaskId;
+        filename.name = "Open";
+        arrayFilename.push(filename)
+        this.setState({arrayFilename: arrayFilename})
+        this.setState({filename: e.target.files[0].name})
+        this.setState({file:e.target.files[0]})
+        this.fileUpload(e.target.files[0])
+        this.setState({uploadflag:1})
+    }
+    
+    fileUpload(file){
+        var formData = new FormData();
+        formData.append('file', file);// file from input
+        var headers = {
+            "headers": {
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            }
+        }
+        Axios.post(API.PostFileUpload, formData, headers)
+        .then(result => {
+            if(result.data.Id){
+                this.postDocuments(result.data.Id);
+            }
+        })
+        .catch(err => {
+        });
+    }
+    
+    postDocuments = (docuId) => {
+        this._isMounted = true;
+        let params = {
+            customerid: this.state.attachtaskId,
+            documentid: docuId
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.PostCustomerDocuments, params, headers)
+        .then(result => {
+            if(this._isMounted){    
+                SweetAlert({
+                    title: trls('Success'),
+                    icon: "success",
+                    button: "OK",
+                  });
+            }
+        })
+        .catch(err => {
+            SweetAlert({
+                title: trls('Fail'),
+                icon: "warning",
+                button: "OK",
+              });
+        });
+    }
+
+    getTaskDocuments = (event) =>{
+        this._isMounted = true;
+        let taskData=event.currentTarget.id;
+        let arrayData = [];
+        arrayData = taskData.split(',');
+        let params = {
+            customerid:parseInt(arrayData[0])
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetCustomerDocuments, params, headers)
+        .then(result => {
+            if(this._isMounted){    
+                this.setState({modaldocumentShow: true})
+                this.setState({documentData: result.data.Items})
+                this.setState({documentHeader: arrayData})
+            }
+        });
     }
     // viewUserData = (event) => {
     //     this._isMounted = true;
@@ -198,9 +266,15 @@ class Userregister extends Component {
                                 onHide={() => this.onHide()}
                                 customerNewCreate={true}
                             />  
+                            <Customerdocument
+                                show={this.state.modaldocumentShow}
+                                onHide={() => this.setState({modaldocumentShow: false})}
+                                documentData = {this.state.documentData}
+                                documentHeader = {this.state.documentHeader}
+                            />
                         </Form>
                     </div>
-                    <div className="table-responsive credit-history">
+                    <div className="table-responsive">
                         <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
@@ -209,6 +283,7 @@ class Userregister extends Component {
                                 <th>{trls('Postcode')}</th>
                                 <th>{trls('City')}</th>
                                 <th>{trls('Country')}</th>
+                                <th>{trls('Attachment')}</th>
                                 <th>{trls('Action')}</th>
                             </tr>
                         </thead>
@@ -223,9 +298,16 @@ class Userregister extends Component {
                                         <td>{data.Zipcode}</td>
                                         <td>{data.City}</td>
                                         <td>{data.Country}</td>
+                                        <td>
+                                            <Row style={{justifyContent:"center"}}>
+                                                <i id={data.id} className="fas fa-file-upload" style={{fontSize:20, cursor: "pointer", paddingLeft: 10, paddingRight:20}} onClick={this.openUploadFile}></i>
+                                                <div id={data.id+','+data.CustomerName+','+data.Address+','+data.City+','+data.Country} style={{color:"#069AF8", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}} onClick={this.getTaskDocuments}>{trls('View')}</div>
+                                                <input id="inputFile" type="file"  required accept="*.*" onChange={this.onChangeFileUpload} style={{display: "none"}} />
+                                            </Row>
+                                        </td>
                                         <td >
                                             <Row style={{justifyContent:"center"}}>
-                                                <img src={require("../../assets/images/icon-draft.svg")} id={data.id} className="statu-item" onClick={this.customerUpdate} alt="Draft"/>
+                                                <i id={data.id} className="fas fa-edit statu-item" onClick={this.customerUpdate}></i>
                                             </Row>
                                         </td>
                                     </tr>

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Modal, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { trls } from '../../components/translate';
+import API from '../../components/api'
 
 const mapStateToProps = state => ({ 
     ...state,
@@ -9,7 +10,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => ({
 });
-class Visitanswer extends Component {
+class Visitdocument extends Component {
     _isMounted = false;
     constructor(props) {
         super(props);
@@ -26,17 +27,19 @@ class Visitanswer extends Component {
     componentDidUpdate(){
 
     }
+    downlaodDocumant = (event) => {
 
+        window.open(API.DownLoadTaskFile+event.currentTarget.id, '_blank');
+    }
     render(){
         let viewHeader = [];
-        let viewLine = [];
+        let documentData = [];
         if(this.props.viewHeader){
             viewHeader   = this.props.viewHeader[0]
         }
-        if(this.props.viewLine){
-            viewLine   = this.props.viewLine
+        if(this.props.documentData){
+            documentData   = this.props.documentData
         }
-
         return (
             <Modal
                 show={this.props.show}
@@ -48,11 +51,11 @@ class Visitanswer extends Component {
             >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {trls('Answer_visit_report')}
+                    {trls('Visit_report')} {trls('Documents')}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Row className="modal-header-doc">
+                 <Row className="modal-header-doc">
                     <Col sm={4} style={{textAlign:"center"}}>
                         <div style={{color: "#0D12EE", fontWeight:"bold"}}>{trls('Visit_Date')}:</div> 
                         {viewHeader&&(
@@ -72,32 +75,31 @@ class Visitanswer extends Component {
                         )}
                     </Col>
                 </Row> 
-                <div style={{fontSize:16, fontWeight:"bold", paddingTop:20, paddingBottom:20}}>{trls('Add_VisitReport')}</div>
-                <div className="table-responsive purchase-order-table">
+                <div className="table-responsive credit-history">
                     <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>{trls('Question')}</th>
-                                <th>{trls('Answer')}</th>
+                                <th>{trls('Id')}</th>
+                                <th>{trls('DocumentId')}</th>
                             </tr>
                         </thead>
-                        {viewLine && (<tbody >
+                        {documentData && (<tbody >
                             {
-                                viewLine.map((data,i) =>(
+                                documentData.map((data,i) =>(
                                     <tr id={i} key={i}>
                                         <td>{i+1}</td>
-                                        <td>{data.question}</td>
-                                        <td>{data.answer}</td>
+                                        <td>
+                                            <div id={data.DocumentId} style={{color:"#069AF8", fontWeight:"bold", cursor: "pointer", textDecoration:"underline"}} onClick={this.downlaodDocumant}>{data.DocumentId}</div>
+                                        </td>
                                     </tr>
                             ))
                             }
                         </tbody>)}
                     </table>
-                </div>   
+                </div>
             </Modal.Body>
             </Modal>
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Visitanswer);
+export default connect(mapStateToProps, mapDispatchToProps)(Visitdocument);

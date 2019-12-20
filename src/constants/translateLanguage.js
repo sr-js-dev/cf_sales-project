@@ -194,7 +194,12 @@ export const TRANSLATIONS = {
       Answer: 'Answer',
       Attachment: 'Attachment',
       Choose_File: "Choose File",
-      View: 'View'
+      View: 'View',
+      Documents: 'Documents',
+      DocumentId: 'DocumentId',
+      Task: 'Task',
+      Success: 'Success!',
+      Fail: 'Fail!'
     },
 
 
@@ -393,6 +398,11 @@ export const TRANSLATIONS = {
       Answer: 'Antwoord',
       Attachment: 'Gehechtheid',
       Choose_File: 'Kies bestand',
-      View: 'Uitzicht'
+      View: 'Uitzicht',
+      Documents: 'Documenten',
+      DocumentId: 'DocumentId',
+      Task: 'Taak',
+      Success: 'Sucess!',
+      Fail: 'Fail!'
     }
   };
