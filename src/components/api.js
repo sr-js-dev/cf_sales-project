@@ -1,6 +1,6 @@
-const BASEURL = 'https://brandnewkey.sohosted-vps.nl:5388';
+const BASEURL = 'http://brandnewkey.sohosted-vps.nl:5389/';
 export default {
-    GetToken: "https://brandnewkey.sohosted-vps.nl:5388/token",
+    GetToken: `${BASEURL}/token`,
     GetUserData:  `${BASEURL}/api/users/GetUsers?excludeActiveUsers=false`,
     GetUserDataById: `${BASEURL}/api/Users/`,
     PostUserData: `${BASEURL}/api/Users`,
