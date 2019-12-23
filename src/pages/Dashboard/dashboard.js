@@ -32,7 +32,7 @@ class Dashboard extends Component {
             tasksnumber: '',
             customerArray: [],
             user_marker: [],
-            currentValue: 0
+            currentValue: 0,
         };
     }
     locationSearch(term) {
@@ -58,7 +58,7 @@ class Dashboard extends Component {
         //     this.setState({center:{lat: res.latitude, lng:res.longitude }})
         // });
         // })();
-        
+        this.setState({customerValue: null});
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.showPosition);
             
@@ -83,7 +83,7 @@ class Dashboard extends Component {
     }
 
     getCustomerCoordinatesById = (val) =>{
-        this.setState({customerId: val.value})
+        this.setState({customerId: val.value, customerValue: val})
         let params = {
             customerid : val.value
         }
@@ -446,6 +446,7 @@ class Dashboard extends Component {
                                 options={customer}
                                 className="select-customer-dashboard"
                                 placeholder={trls('Select_Customer')}
+                                value={this.state.customerValue}
                                 onChange={val => this.getCustomerCoordinatesById(val)}
                             />
                             <Button variant="outline-success" style={{height:55, width:55, paddingTop:-10, color: '#F90404', fontSize:25}} onClick={this.getLocationIpPosition}><i className="fas fa-sync-alt"></i></Button>

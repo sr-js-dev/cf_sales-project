@@ -144,7 +144,7 @@ class Userregister extends Component {
         let customerFinancialData1=this.state.customerFinancialData1;
         let paymentterm=''
         if(customerDetailData){
-             paymentterm = customerDetailData.paymentterm;
+            paymentterm = customerDetailData.paymentterm;
         }
             
         return (
@@ -152,7 +152,7 @@ class Userregister extends Component {
                 <Row className="customer-detail">
                     <Col sm={3}className="card-container-col">
                         <Card>
-                            <Card.Header><i className="fa fa-user" style={{paddingRight:"5px", fontSize:"18px"}}></i>{trls("Codex_SAS")}</Card.Header>
+                            <Card.Header><i className="fa fa-user" style={{paddingRight:"5px", fontSize:"18px"}}></i>{customerDetailData ? customerDetailData.CustomerName : ''}</Card.Header>
                                 <Card.Body>
                                         <div className="codex-content">
                                             <i className="fas fa-address-card" style={{paddingRight:"5px", fontSize:"18px"}}></i>
