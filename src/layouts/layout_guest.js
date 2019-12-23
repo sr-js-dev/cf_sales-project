@@ -23,20 +23,20 @@ class Layout extends Component {
             <Sidebar/>
             <Col style={{paddingLeft:0, paddingRight:0}}>
              <Header/>
-                <Router history={history}>
-                  <Switch>
-                    <Route path="/dashboard" component={Dashboard}/>
-                    <Route path="/user" component={User}/>
-                    <Route path="/tasks" component={Tasks}/>
-                    <Route path="/customer/detail" component={Customerdetail}/>
-                    <Route path="/customer" component={Customer}/>
-                    <Route path="/visit-report/create-question" component={Visitreportquestion}/>
-                    <Route path="/visit-report/create" component={Creatvisitreport}/>
-                    <Route path="/visit-report" component={Visitreport}/>
-                  </Switch>
-                </Router>
-            </Col>
-          </Row>
+            <Router history={history}>
+              <Switch>
+                <Route path="/dashboard" component={Dashboard}/>
+                <Route path="/user" component={User}/>
+                <Route path="/tasks" component={Tasks}/>
+                <Route path="/customer/detail" component={Customerdetail}/>
+                <Route path="/customer" component={Customer}/>
+                <Route path="/visit-report/create-question" component={Visitreportquestion}/>
+                <Route path="/visit-report/create" component={Creatvisitreport}/>
+                <Route path="/visit-report" component={Visitreport}/>
+              </Switch>
+            </Router>
+          </Col>
+        </Row>
       )
     };
   }

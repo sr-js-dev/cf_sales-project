@@ -43,7 +43,9 @@ class AccordionItem extends React.Component {
     super(props);
     this.state = {  
         lastYear2 : curyear-2,
-        lastYear3 : curyear-3
+        lastYear3 : curyear-3,
+        start: 0,
+        end: 0
     };
   }
     componentDidMount() {
@@ -142,6 +144,14 @@ class AccordionItem extends React.Component {
                       ]
                     }
                   );
+                  let info = $('#example-product').DataTable().page.info();
+                  if (info) this.setState({start: info.start, end: info.length});
+                  const self = this;
+                  $('#example-product').on( 'page.dt', function () {
+                    let info = $('#example-product').DataTable().page.info();
+                    self.setState({start: info.start, end: info.end});
+                    
+                  });
             }
         });
     }
@@ -176,9 +186,51 @@ class AccordionItem extends React.Component {
             title
         },
         state: {
-            opened
+            opened,
+            start,
+            end
         }
         } = this
+        let tableData = null;
+        if(customerItems && !this.state.loading) {
+            console.log(start, end);
+            tableData = customerItems.map((data,i) =>{
+                return(
+                <tr id={i} key={i}>
+                    <td>{data.ItemNumber}</td>
+                    <td>{data.Itemtype}</td>
+                    <td>{data.Color}</td>
+                    <td>{data.Length}</td>
+                    <td>{this.formatNumber(data.currentYear)}</td>
+                    <td>{this.formatNumber(data.lastYear)}</td>
+                    <td>{this.formatNumber(data.lastYear2)}</td>
+                    <td>{this.formatNumber(data.lastYear3)}</td>
+                    <td>
+                        <Row >
+                            <Col id = {`gauge${i}`} sm={6} style={{textAlign:"center", fontSize:"13px"}}>
+                            { i >= start && i < end &&
+                                <GaugeChart 
+                                    id={"gauge-chart"+i+1}
+                                    colors={["#FA0505","#6AAB5F"]} 
+                                    hideText={true}
+                                    needleColor={"red"}
+                                    nrOfLevels={2} 
+                                    arcPadding={0} 
+                                    cornerRadius={0} 
+                                    percent={data.gaugepercent}
+                                    arcWidth={0.4} 
+                                />
+                            }
+                            </Col>
+                            <Col sm={3} style={{paddingLeft:"0px"}}>
+                                <p>{this.formatNumberPercent(data.progress)+"%"}</p>
+                            </Col>
+                        </Row>
+                    </td>
+                </tr>
+            )})
+        }
+
         return (
         <div
             {...{
@@ -210,38 +262,7 @@ class AccordionItem extends React.Component {
                         </thead>
                         {customerItems && !this.state.loading &&(<tbody >
                             {
-                                customerItems.map((data,i) =>(
-                                    <tr id={i} key={i}>
-                                        <td>{data.ItemNumber}</td>
-                                        <td>{data.Itemtype}</td>
-                                        <td>{data.Color}</td>
-                                        <td>{data.Length}</td>
-                                        <td>{this.formatNumber(data.currentYear)}</td>
-                                        <td>{this.formatNumber(data.lastYear)}</td>
-                                        <td>{this.formatNumber(data.lastYear2)}</td>
-                                        <td>{this.formatNumber(data.lastYear3)}</td>
-                                        <td>
-                                            <Row >
-                                                <Col sm={6} style={{textAlign:"center", fontSize:"13px"}}>
-                                                    <GaugeChart 
-                                                        id={"gauge-chart"+i+1}
-                                                        colors={["#FA0505","#6AAB5F"]} 
-                                                        hideText={true}
-                                                        needleColor={"red"}
-                                                        nrOfLevels={2} 
-                                                        arcPadding={0} 
-                                                        cornerRadius={0} 
-                                                        percent={data.gaugepercent}
-                                                        arcWidth={0.4} 
-                                                    />
-                                                </Col>
-                                                <Col sm={3} style={{paddingLeft:"0px"}}>
-                                                    <p>{this.formatNumberPercent(data.progress)+"%"}</p>
-                                                </Col>
-                                            </Row>
-                                        </td>
-                                    </tr>
-                            ))
+                                tableData
                             }
                         </tbody>)}
                     </table>

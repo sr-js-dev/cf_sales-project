@@ -36,6 +36,8 @@ class Modalpanel extends React.Component {
 class AccordionItem extends React.Component {
   state = {
     opened: false,
+    start: 0,
+    end: 0
   }
     componentDidMount() {
         this._isMounted=true
@@ -117,6 +119,14 @@ class AccordionItem extends React.Component {
                       ]
                     }
                   );
+                  let info = $('#example-modal').DataTable().page.info();
+                  if (info) this.setState({start: info.start, end: info.length});
+                  const self = this;
+                  $('#example-modal').on( 'page.dt', function () {
+                    let info = $('#example-modal').DataTable().page.info();
+                    self.setState({start: info.start, end: info.end});
+                    
+                  });
             }
         });
     }
@@ -150,9 +160,42 @@ class AccordionItem extends React.Component {
             title
         },
         state: {
-            opened
+            opened,
         }
         } = this
+        let tableData;
+
+        if (customerModels && !this.state.loading) {
+            tableData = customerModels.map((data,i) =>(
+                <tr id={i} key={i}>
+                    <td>{data.Model}</td>
+                    <td>{data.Type}</td>
+                    <td>{data.Size}</td>
+                    <td>{this.formatNumber(data.currentYear)}</td>
+                    <td>{this.formatNumber(data.lastYear)}</td>
+                    <td>
+                        <Row >
+                            <Col sm={5} style={{textAlign:"center", fontSize:"13px"}}>
+                                <GaugeChart 
+                                    id={"gauge-chart"+i}
+                                    colors={["#FA0505","#6AAB5F"]} 
+                                    hideText={true}
+                                    needleColor={"red"}
+                                    nrOfLevels={2} 
+                                    arcPadding={0} 
+                                    cornerRadius={0} 
+                                    percent={data.gaugepercent}
+                                    arcWidth={0.4} 
+                                />
+                            </Col>
+                            <Col sm={3} style={{paddingLeft:"0px"}}>
+                                <p>{this.formatNumberPercent(data.progress)+"%"}</p>
+                            </Col>
+                        </Row>
+                    </td>
+                </tr>
+            ))
+        }
         return (
         <div
             {...{
@@ -181,35 +224,7 @@ class AccordionItem extends React.Component {
                         </thead>
                         {customerModels && !this.state.loading &&(<tbody >
                             {
-                                customerModels.map((data,i) =>(
-                                    <tr id={i} key={i}>
-                                        <td>{data.Model}</td>
-                                        <td>{data.Type}</td>
-                                        <td>{data.Size}</td>
-                                        <td>{this.formatNumber(data.currentYear)}</td>
-                                        <td>{this.formatNumber(data.lastYear)}</td>
-                                        <td>
-                                            <Row >
-                                                <Col sm={5} style={{textAlign:"center", fontSize:"13px"}}>
-                                                    <GaugeChart 
-                                                        id={"gauge-chart"+i}
-                                                        colors={["#FA0505","#6AAB5F"]} 
-                                                        hideText={true}
-                                                        needleColor={"red"}
-                                                        nrOfLevels={2} 
-                                                        arcPadding={0} 
-                                                        cornerRadius={0} 
-                                                        percent={data.gaugepercent}
-                                                        arcWidth={0.4} 
-                                                    />
-                                                </Col>
-                                                <Col sm={3} style={{paddingLeft:"0px"}}>
-                                                    <p>{this.formatNumberPercent(data.progress)+"%"}</p>
-                                                </Col>
-                                            </Row>
-                                        </td>
-                                    </tr>
-                            ))
+                                tableData
                             }
                         </tbody>)}
                     </table>

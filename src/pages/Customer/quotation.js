@@ -186,8 +186,8 @@ class AccordionItem extends React.Component {
                                         </td>
                                         <td>{this.formatDate(data.Date)}</td>
                                         <td>{this.formatNumber(data.Revenue)}</td>
-                                        <td>{data.Reference}</td>
-                                        <td>{data.Delivery}</td>
+                                        <td>{data.Reference ? data.Reference : ''}</td>
+                                        <td>{data.Delivery ? data.Delivery: ''}</td>
                                         {data.Approved?(
                                             <td>{trls('Approved')}</td>
                                         ):<td>{trls('Not_Approved')}</td>}
