@@ -21,7 +21,7 @@ class Layout extends Component {
       return (
           <Row style={{height:"100%"}}>
             <Sidebar/>
-            <Col style={{paddingLeft:0, paddingRight:0}}>
+            <Col className="contentWrapper">
              <Header/>
             <Router history={history}>
               <Switch>

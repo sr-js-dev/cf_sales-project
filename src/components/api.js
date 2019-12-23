@@ -3,6 +3,7 @@ export default {
     GetToken: `${BASEURL}/token`,
     GetUserData:  `${BASEURL}/api/users/GetUsers?excludeActiveUsers=false`,
     GetUserDataById: `${BASEURL}/api/Users/`,
+    GetUserDataByName: `${BASEURL}/api/Users/GetByUserName/`,
     PostUserData: `${BASEURL}/api/Users`,
     PostUserUpdate: `${BASEURL}/api/Users`,
     GetTasksData: `${BASEURL}/api/factory/execute/portallvs/getTasks`,

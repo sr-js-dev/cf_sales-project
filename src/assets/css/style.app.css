@@ -17,7 +17,12 @@ span{
 font-size:16px;
 }
 .order_div{
-padding:20px;
+/* padding:20px; */
+}
+.contentWrapper {
+  padding-left:0;
+  padding-right:0;
+  overflow: scroll;
 }
 @media (max-width: 1000px){
 .orders__filters-item {

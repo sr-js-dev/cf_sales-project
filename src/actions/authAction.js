@@ -2,6 +2,7 @@ import * as types from '../constants/actionTypes';
 import $ from 'jquery';
 import API from '../components/api'
 import history from '../history';
+import { getUserToken } from '../components/auth';
 
 
 export const fetchLoginData = (params) => {
@@ -24,6 +25,7 @@ export const fetchLoginData = (params) => {
             window.localStorage.setItem('cf_sales_token', response.access_token);
             window.localStorage.setItem('cf_sales_userName', response.userName);
             window.localStorage.setItem('cf_sales_roles', response.roles);
+            // getUserData(params.username);
             dispatch(fetchLoginDataSuccess(response));
             history.push('/user')
         })
@@ -32,6 +34,26 @@ export const fetchLoginData = (params) => {
         });
     };
 }
+
+const getUserData = (username) => {
+    var settings = {
+        "url": API.GetUserDataByName + username,
+        "method": "GET",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer "+getUserToken(),
+    }
+    }
+    $.ajax(settings).done(function (response) {
+    })
+    .then(response => {
+      console.log("dsfsd==========>", response);
+  })
+  .catch(err => {
+      
+  });
+}
+
 
 //login fail
 export const fetchLoginDataFail = (param) => {

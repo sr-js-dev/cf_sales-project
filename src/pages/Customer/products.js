@@ -193,7 +193,6 @@ class AccordionItem extends React.Component {
         } = this
         let tableData = null;
         if(customerItems && !this.state.loading) {
-            console.log(start, end);
             tableData = customerItems.map((data,i) =>{
                 return(
                 <tr id={i} key={i}>
